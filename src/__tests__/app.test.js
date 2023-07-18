@@ -2,12 +2,14 @@ import Daemon from '../js/Daemon';
 
 test('Calculate attack depending on distance', () => {
   const character = new Daemon('Ivan');
-  character.attackBasedOnDistance = 3;
-  expect(character.attackBasedOnDistance).toBe(80);
+  character.distance = 3;
+  character.attack = 100;
+  expect(character.attack).toBe(80);
 });
 
 test('Calculate attack depending on distance and character is stoned', () => {
   const character = new Daemon('Ivan');
-  character.stoned = 3;
+  character.distance = 3;
+  character.stoned = 100;
   expect(character.stoned).toBe(72);
 });

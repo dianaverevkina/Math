@@ -3,24 +3,34 @@ import Character from './Character';
 export default class Magician extends Character {
   constructor(name, type = 'Magician') {
     super(name, type);
-    this.attack = 100;
-    this.isStoned = false;
   }
 
-  set attackBasedOnDistance(distance) {
-    this._attack = this.attack - (this.attack * ((distance - 1) * 0.1));
+  // Расчет силы урона в зависимости от расстояния и дурмана
+  calcDamagePower(attack, distance) {
+    const damagePower = attack * ((distance - 1) * 0.1);
+    if (this.isStoned) {
+      return damagePower + Math.log2(distance) * 5;
+    }
+    return damagePower;
   }
 
-  get attackBasedOnDistance() {
-    return this._attack;
+  // Установка значения атаки
+  set attack(value) {
+    this._attack = value;
   }
 
-  set stoned(distance) {
-    this.attackBasedOnDistance = distance;
-    this.stonedAttack = Math.round(this.attackBasedOnDistance - Math.log2(distance) * 5);
+  // Получить атаку в зависимости от расстояния
+  get attack() {
+    return this._attack - this.damagePower(this._attack, this.distance);
+  }
+
+  set stoned(value) {
+    this.stonedAttack = value;
   }
 
   get stoned() {
+    this.isStoned = true;
+    this.stonedAttack -= this.damagePower(this.stonedAttack, this.distance);
     return this.stonedAttack;
   }
 }
