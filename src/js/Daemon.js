@@ -1,36 +1,43 @@
 import Character from './Character';
 
 export default class Daemon extends Character {
-  constructor(name, type = 'Daemon') {
+  constructor(name, type = 'Magician') {
     super(name, type);
   }
 
-  // Расчет силы урона в зависимости от расстояния и дурмана
-  calcDamagePower(attack, distance) {
-    const damagePower = attack * ((distance - 1) * 0.1);
-    if (this.isStoned) {
-      return damagePower + Math.log2(distance) * 5;
-    }
-    return damagePower;
+  // Устанавливает значение клетки
+  set distance(distance) {
+    this._distance = distance;
   }
 
-  // Установка значения атаки
-  set attack(value) {
-    this._attack = value;
+  // Получает значение клетки
+  get distance() {
+    return this._distance;
   }
 
-  // Получить атаку в зависимости от расстояния
+  // Устанавливает силу атаки
+  set attack(attack) {
+    this._attack = attack;
+  }
+
+  // Получаем значение силы атаки в зависимости от расстояния и "дурмана"
   get attack() {
-    return this._attack - this.calcDamagePower(this._attack, this.distance);
+    const distanceModifier = (100 - (this.distance - 1) * 10);
+    const stonedModifier = Math.ceil(Math.log2(this.distance) * 5);
+
+    if (this.stoned) {
+      return (this._attack * distanceModifier) / 100 - stonedModifier;
+    }
+    return (this._attack * distanceModifier) / 100;
   }
 
+  // Устанавливаем дурман
   set stoned(value) {
-    this.stonedAttack = value;
+    this._stoned = value;
   }
 
+  // Получаем дурман
   get stoned() {
-    this.isStoned = true;
-    this.stonedAttack -= this.calcDamagePower(this.stonedAttack, this.distance);
-    return Math.round(this.stonedAttack);
+    return this._stoned;
   }
 }
